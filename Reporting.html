@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporting and Analytics</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(#5585b5, #53a8b6, #79c2d0, #bbe4e9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 800px;
+            max-width: 100%;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporting and Analytics</h1>
+        <form id="reportForm" class="mb-4">
+            <div class="form-group">
+                <label for="dataInput">Enter Data (comma separated values):</label>
+                <input type="text" id="dataInput" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Generate Report</button>
+        </form>
+        <div class="results">
+            <h2>Report</h2>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Index</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="reportResults">
+                    <!-- Report data will be added here dynamically -->
+                </tbody>
+            </table>
+            <div class="charts">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportForm = document.getElementById('reportForm');
+            const reportResults = document.getElementById('reportResults');
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            let myChart;
+
+            function generateChart(data) {
+                if (myChart) {
+                    myChart.destroy();
+                }
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map((_, index) => `Item ${index + 1}`),
+                        datasets: [{
+                            label: 'Values',
+                            data: data,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            reportForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const dataInput = document.getElementById('dataInput').value;
+                const data = dataInput.split(',').map(Number);
+
+                reportResults.innerHTML = '';
+                data.forEach((value, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${value}</td>
+                    `;
+                    reportResults.appendChild(row);
+                });
+
+                generateChart(data);
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

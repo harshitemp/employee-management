@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(#5585b5, #53a8b6, #79c2d0, #bbe4e9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 400px;
+            max-width: 100%;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form div {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        label:hover {
+            color: #007bff; /* Change this color to whatever you prefer */
+        }
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-left: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .actions button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .actions button:hover {
+            background-color: #0056b3;
+        }
+        .actions .delete {
+            background-color: #dc3545;
+        }
+        .actions .delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Employee Management</h1>
+        <form id="employeeForm">
+            <input type="hidden" id="employeeId" />
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div>
+                <label for="position">Position:</label>
+                <input type="text" id="position" required>
+            </div>
+            <div>
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" required>
+            </div>
+            <button type="submit" id="submitButton">Add Employee</button>
+        </form>
+        <h2>Employee List</h2>
+        <table id="employeeTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Employee rows will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const employeeForm = document.getElementById('employeeForm');
+            const employeeTableBody = document.getElementById('employeeTable').querySelector('tbody');
+            let employees = [];
+            let editIndex = null;
+
+            function renderTable() {
+                employeeTableBody.innerHTML = '';
+                employees.forEach((employee, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${employee.name}</td>
+                        <td>${employee.position}</td>
+                        <td>${employee.salary}</td>
+                        <td class="actions">
+                            <button onclick="editEmployee(${index})">Edit</button>
+                            <button class="delete" onclick="deleteEmployee(${index})">Delete</button>
+                        </td>
+                    `;
+                    employeeTableBody.appendChild(row);
+                });
+            }
+
+            employeeForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const position = document.getElementById('position').value;
+                const salary = document.getElementById('salary').value;
+
+                if (editIndex !== null) {
+                    employees[editIndex] = { name, position, salary };
+                    editIndex = null;
+                } else {
+                    employees.push({ name, position, salary });
+                }
+
+                employeeForm.reset();
+                document.getElementById('submitButton').innerText = 'Add Employee';
+                renderTable();
+            });
+
+            window.editEmployee = (index) => {
+                const employee = employees[index];
+                document.getElementById('name').value = employee.name;
+                document.getElementById('position').value = employee.position;
+                document.getElementById('salary').value = employee.salary;
+                document.getElementById('submitButton').innerText = 'Update Employee';
+                editIndex = index;
+            };
+
+            window.deleteEmployee = (index) => {
+                employees.splice(index, 1);
+                renderTable();
+            };
+
+            renderTable();
+        });
+    </script>
+</body>
+</html>

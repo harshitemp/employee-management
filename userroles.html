@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Roles and Permissions</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(#5585b5, #53a8b6, #79c2d0, #bbe4e9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 800px;
+            max-width: 100%;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .actions .edit:hover {
+            background-color: #007bff;
+        }
+        .actions .delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Roles and Permissions</h1>
+        <form id="userForm" class="mb-4">
+            <div class="form-group">
+                <label for="userName">Name:</label>
+                <input type="text" id="userName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="userRole">Role:</label>
+                <select id="userRole" class="form-control" required>
+                    <option value="Admin">Admin</option>
+                    <option value="HR">HR</option>
+                    <option value="Employee">Employee</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add User</button>
+        </form>
+        <div class="results">
+            <h2>User List</h2>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                    <!-- User data will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userForm = document.getElementById('userForm');
+            const userTable = document.getElementById('userTable');
+            let users = [];
+
+            function renderTable() {
+                userTable.innerHTML = '';
+                users.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.name}</td>
+                        <td>${user.role}</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-info edit" onclick="editUser(${index})">Edit</button>
+                            <button class="btn btn-sm btn-danger delete" onclick="deleteUser(${index})">Delete</button>
+                        </td>
+                    `;
+                    userTable.appendChild(row);
+                });
+            }
+
+            userForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = document.getElementById('userName').value;
+                const role = document.getElementById('userRole').value;
+
+                users.push({ name, role });
+
+                userForm.reset();
+                renderTable();
+            });
+
+            window.editUser = (index) => {
+                const user = users[index];
+                document.getElementById('userName').value = user.name;
+                document.getElementById('userRole').value = user.role;
+                users.splice(index, 1);
+                renderTable();
+            };
+
+            window.deleteUser = (index) => {
+                users.splice(index, 1);
+                renderTable();
+            };
+
+            renderTable();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

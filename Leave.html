@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(#5585b5, #53a8b6, #79c2d0, #bbe4e9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 600px;
+            max-width: 100%;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .actions .approve:hover {
+            background-color: #218838;
+        }
+        .actions .reject:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Leave Management</h1>
+        <form id="leaveForm" class="mb-4">
+            <div class="form-group">
+                <label for="employeeName">Employee Name:</label>
+                <input type="text" id="employeeName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="leaveType">Leave Type:</label>
+                <input type="text" id="leaveType" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Submit Leave Request</button>
+        </form>
+        <h2>Leave Requests</h2>
+        <table id="leaveTable" class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Leave Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Leave request rows will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const leaveForm = document.getElementById('leaveForm');
+            const leaveTableBody = document.getElementById('leaveTable').querySelector('tbody');
+            let leaveRequests = [];
+
+            function renderTable() {
+                leaveTableBody.innerHTML = '';
+                leaveRequests.forEach((request, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${request.employeeName}</td>
+                        <td>${request.leaveType}</td>
+                        <td>${request.startDate}</td>
+                        <td>${request.endDate}</td>
+                        <td>${request.status}</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-success approve" onclick="approveLeave(${index})">Approve</button>
+                            <button class="btn btn-sm btn-danger reject" onclick="rejectLeave(${index})">Reject</button>
+                        </td>
+                    `;
+                    leaveTableBody.appendChild(row);
+                });
+            }
+
+            leaveForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const employeeName = document.getElementById('employeeName').value;
+                const leaveType = document.getElementById('leaveType').value;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+
+                leaveRequests.push({ employeeName, leaveType, startDate, endDate, status: 'Pending' });
+
+                leaveForm.reset();
+                renderTable();
+            });
+
+            window.approveLeave = (index) => {
+                leaveRequests[index].status = 'Approved';
+                renderTable();
+            };
+
+            window.rejectLeave = (index) => {
+                leaveRequests[index].status = 'Rejected';
+                renderTable();
+            };
+
+            renderTable();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

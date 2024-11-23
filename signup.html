@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Signup and Login</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(#5585b5, #53a8b6, #79c2d0, #bbe4e9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 400px;
+            max-width: 100%;
+        }
+        .form-group input {
+            height: 45px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+            height: 45px;
+            font-size: 16px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .alert {
+            display: none;
+        }
+        .toggle-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: #007bff;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+        /* Hover effect on labels */
+        label:hover {
+            color: #007bff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="signupForm">
+            <h2>Signup</h2>
+            <form id="signupFormElement">
+                <div class="form-group">
+                    <label for="signupFirstName">First Name:</label>
+                    <input type="text" id="signupFirstName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupLastName">Last Name:</label>
+                    <input type="text" id="signupLastName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupUsername">Username:</label>
+                    <input type="text" id="signupUsername" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password:</label>
+                    <input type="password" id="signupPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Signup</button>
+            </form>
+            <div class="alert alert-danger mt-3" id="signupError">
+                Username already taken.
+            </div>
+            <div class="alert alert-success mt-3" id="signupSuccess">
+                Signup successful. You can now log in.
+            </div>
+            <span class="toggle-link" onclick="showLogin()">Already have an account? Log in</span>
+        </div>
+        <div id="loginForm" style="display: none;">
+            <h2>Login</h2>
+            <form id="loginFormElement">
+                <div class="form-group">
+                    <label for="loginUsername">Username:</label>
+                    <input type="text" id="loginUsername" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <div class="alert alert-danger mt-3" id="loginError">
+                Invalid username or password.
+            </div>
+            <span class="toggle-link" onclick="showSignup()">Don't have an account? Sign up</span>
+        </div>
+    </div>
+    <script>
+        const users = [];
+
+        function showLogin() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        function showSignup() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+        }
+
+        document.getElementById('signupFormElement').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const firstName = document.getElementById('signupFirstName').value;
+            const lastName = document.getElementById('signupLastName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            if (users.find(user => user.username === username)) {
+                document.getElementById('signupError').style.display = 'block';
+                document.getElementById('signupSuccess').style.display = 'none';
+            } else {
+                users.push({ firstName, lastName, email, username, password });
+                document.getElementById('signupError').style.display = 'none';
+                document.getElementById('signupSuccess').style.display = 'block';
+                document.getElementById('signupFormElement').reset();
+            }
+        });
+
+        document.getElementById('loginFormElement').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (users.find(user => user.username === username && user.password === password)) {
+                alert('Login successful');
+                document.getElementById('loginError').style.display = 'none';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
